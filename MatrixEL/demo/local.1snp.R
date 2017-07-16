@@ -45,14 +45,13 @@ pvalue = me$all$eqtls$pvalue;
 rez = c(beta = beta, tstat = tstat, pvalue = pvalue);
 
 # And compare to those from the linear regression in R
-{
-  cat("\n\n Matrix eQTL: \n");
-  print(rez);
-  cat("\n R summary(lm()) output: \n");
-  lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
-  lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
-  print( lmout );
-}
+cat("\n\n Matrix eQTL: \n");
+print(rez);
+cat("\n R summary(lm()) output: \n");
+lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
+lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
+print( lmout );
+
 
 # Results from Matrix eQTL and "lm" must agree
 stopifnot(all.equal(lmout, rez, check.attributes=FALSE));
