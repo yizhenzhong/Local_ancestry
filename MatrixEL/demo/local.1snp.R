@@ -52,5 +52,6 @@ lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
 lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
 print( lmout );
 
+
 # Results from Matrix eQTL and "lm" must agree
 stopifnot(all.equal(lmout, rez, check.attributes=FALSE));
