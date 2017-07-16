@@ -54,4 +54,3 @@ print( lmout );
 
 # Results from Matrix eQTL and "lm" must agree
 stopifnot(all.equal(lmout, rez, check.attributes=FALSE));
-
