@@ -1,5 +1,6 @@
-# Matrix eQTL by Andrey A. Shabalin
+# Original Matrix eQTL by Andrey A. Shabalin
 # http://www.bios.unc.edu/research/genomic_software/Matrix_eQTL/
+# Modified for local analysis
 
 # http://cran.r-project.org/web/packages/policies.html
 
