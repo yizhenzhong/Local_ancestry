@@ -76,7 +76,7 @@ locals$LoadFile(LOCAL_file_name);
 
 ## Run the analysis
 
-me2 = Matrix_eQTL_main(
+me2 = MatrixEL_main(
   snps = snps,
   gene = genes,
   cvrt = cvrts,

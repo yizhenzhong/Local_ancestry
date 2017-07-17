@@ -26,7 +26,7 @@ locals = SlicedData$new( matrix(local.mat,nrow=1))
 # Produce no output files
 filename = NULL; # tempfile()
 
-me = Matrix_eQTL_main(
+me = MatrixEL_main(
   snps = snps,
   gene = genes,
   cvrt = cvrts,
