@@ -76,7 +76,7 @@ locals$LoadFile(LOCAL_file_name);
 
 ## Run the analysis
 
-me2 = Matrix_eQTL_main(
+me2 = MatrixEL_main(
   snps = snps,
   gene = genes,
   cvrt = cvrts,
@@ -124,9 +124,8 @@ table = as.data.frame(table)
 colnames(table) = c("snp","gene","estimate","std.error","t.value","p")
 table = table[order(table$p),]
 
-{
-  cat("\n\n Matrix eQTL: \n");
-  print(show(me$all$eqtls));
-  cat("\n R summary output: \n");
-  print(table[which(table$p <= pvOutputThreshold),])
-}
+cat("\n\n Matrix eQTL: \n");
+print(show(me$all$eqtls));
+cat("\n R summary output: \n");
+print(table[which(table$p <= pvOutputThreshold),])
+

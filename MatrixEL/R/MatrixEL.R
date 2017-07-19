@@ -1,5 +1,6 @@
-# Matrix eQTL by Andrey A. Shabalin
+# Original Matrix eQTL by Andrey A. Shabalin
 # http://www.bios.unc.edu/research/genomic_software/Matrix_eQTL/
+# Modified for local analysis
 
 # http://cran.r-project.org/web/packages/policies.html
 
@@ -1024,7 +1025,7 @@ setMethod("colMeans", "SlicedData", function(x, na.rm = FALSE, dims = 1L) {
 	return( rez );
 }
 
-Matrix_eQTL_engine = function(
+MatrixEL_engine = function(
 						snps,
 						gene,
 						cvrt = SlicedData$new(),
@@ -1037,7 +1038,7 @@ Matrix_eQTL_engine = function(
  						pvalue.hist = FALSE,
 						min.pv.by.genesnp = FALSE,
 						noFDRsaveMemory = FALSE) {
-	rez = Matrix_eQTL_main(
+	rez = MatrixEL_main(
 				snps = snps,
 				gene = gene,
 				cvrt = cvrt,
@@ -1053,7 +1054,7 @@ Matrix_eQTL_engine = function(
 	return( rez );
 }
 
-Matrix_eQTL_main = function(
+MatrixEL_main = function(
 						snps,
 						gene,
 						cvrt = SlicedData$new(),
