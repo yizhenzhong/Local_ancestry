@@ -1,12 +1,12 @@
-library(MatrixEL)
+library(LAMatrix)
 
 
 # ################################################
 # #test a table
 # ################################################
 
-base.dir = find.package('MatrixEL');
-base.dir = "C:/Users/yzu280/Desktop/MatrixEL/"
+base.dir = find.package('LAMatrix');
+base.dir = "C:/Users/yzu280/Desktop/LAMatrix/"
 # Genotype file name
 SNP_file_name = paste(base.dir, "/data/SNP.txt", sep="");
 
@@ -76,7 +76,7 @@ locals$LoadFile(LOCAL_file_name);
 
 ## Run the analysis
 
-me2 = MatrixEL_main(
+me2 = LAMatrix_main(
   snps = snps,
   gene = genes,
   cvrt = cvrts,

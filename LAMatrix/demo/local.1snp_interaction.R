@@ -1,4 +1,4 @@
-library(MatrixEL)
+library(LAMatrix)
 
 
 # Number of columns (samples)
@@ -30,7 +30,7 @@ ints = SlicedData$new( matrix(int.mat,nrow=1))
 # Produce no output files
 filename = NULL; # tempfile()
 
-me = MatrixEL_main(
+me = LAMatrix_main(
   snps = ints,
   gene = genes,
   cvrt = cvrts,

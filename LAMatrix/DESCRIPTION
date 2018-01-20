@@ -1,0 +1,8 @@
+Package: LAMatrix
+Type: Package
+Title: LAMatrix: Efficient eQTL Mapping with Local Ancestry
+Version: 0.1.0
+Authors@R: Yizhen Zhong <yzzhong1993@gmail.com>
+Description: 
+License: What license is it under?
+LazyData: TRUE
