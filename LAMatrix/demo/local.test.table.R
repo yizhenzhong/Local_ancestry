@@ -6,7 +6,6 @@ library(LAMatrix)
 # ################################################
 
 base.dir = find.package('LAMatrix');
-base.dir = "C:/Users/yzu280/Desktop/LAMatrix/"
 # Genotype file name
 SNP_file_name = paste(base.dir, "/data/SNP.txt", sep="");
 
