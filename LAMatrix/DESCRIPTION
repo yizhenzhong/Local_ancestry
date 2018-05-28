@@ -1,8 +1,10 @@
 Package: LAMatrix
 Type: Package
-Title: LAMatrix: Efficient eQTL Mapping with Local Ancestry
+Title: Efficient eQTL Mapping with Local Ancestry
 Version: 0.1.0
-Authors@R: Yizhen Zhong <yzzhong1993@gmail.com>
-Description: 
-License: What license is it under?
+Authors: Yizhen Zhong [aut, cre], Eric Gamazon [ctb] 
+Maintainer: Yizhen Zhong <yzzhong1993@gmail.com>
+Description: This package allows eQTL mapping while adjusting for a SNP-specific 
+    covariate with a linear model.
+License: LGPL-3
 LazyData: TRUE
