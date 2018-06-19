@@ -1,23 +1,21 @@
 library(LAMatrix)
 
 
-# Number of columns (samples)
-n = 200;
 
-# Number ofs covariates
-nc = 10;
+n = 200;# Number of columns (samples)
 
-# Generate the covariates
 
-cvrt.mat = 2 + matrix(rnorm(n*nc), ncol = nc);
-snps.mat = floor(runif(n, min = 0, max = 3)); 
-local.mat = floor(runif(n, min = 0, max = 3));
+nc = 10;# Number ofs covariates
 
-# Generate the vectors with genotype and expression variables
 
-gene.mat = cvrt.mat %*% rnorm(nc) + rnorm(n) + 0.5 * snps.mat + 1 + 0.3 *local.mat;
 
-# Create 3 SlicedData objects for the analysis
+cvrt.mat = 2 + matrix(rnorm(n*nc), ncol = nc);# Generate the covariates
+snps.mat = floor(runif(n, min = 0, max = 3)); # Generate the genotype
+local.mat = floor(runif(n, min = 0, max = 3)); # Generate the local ancestry
+
+
+gene.mat = cvrt.mat %*% rnorm(nc) + rnorm(n) + 0.5 * snps.mat + 1 + 0.3 *local.mat; # Generate the expression vector
+
 snps = SlicedData$new( matrix( snps.mat, nrow = 1 ) );
 genes = SlicedData$new( matrix( gene.mat, nrow = 1 ) );
 cvrts = SlicedData$new( t(cvrt.mat) );
@@ -43,6 +41,7 @@ beta = me$all$eqtls$beta;
 tstat = me$all$eqtls$statistic;
 pvalue = me$all$eqtls$pvalue;
 rez = c(beta = beta, tstat = tstat, pvalue = pvalue);
+
 
 # And compare to those from the linear regression in R
 cat("\n\n Matrix eQTL: \n");
