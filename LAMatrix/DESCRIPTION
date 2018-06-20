@@ -8,5 +8,6 @@ Description: This package allows eQTL mapping while adjusting for a SNP-specific
     covariate with a linear model.
 License: LGPL-3
 LazyData: TRUE
-Depends: methods
+Depends: methods,
+        MatrixEQTL
 RoxygenNote: 6.0.1

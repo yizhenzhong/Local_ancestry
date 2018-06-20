@@ -24,5 +24,6 @@
 #' @import graphics
 #' @import utils
 #' @import stats
+#' @import MatrixEQTL
 
 NULL

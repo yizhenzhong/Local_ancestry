@@ -70,7 +70,52 @@
 #' \code{logical}. Set \code{noFDRsaveMemory = TRUE} to save
 #' significant gene-SNP pairs directly to the output files.}
 #'
-#'
+#'@return {
+#'The detected eQTLs are saved in \code{output_file_name}
+#'and/or \code{output_file_name.cis} if they are not \code{NULL}.
+#'The method also returns a list with a summary of the performed analysis.
+#'\item{param}{
+#'Keeps all input parameters and also records
+#'the number of degrees of freedom for the full model.}
+#'\item{time.in.sec}{
+#'Time difference between the start and
+#'the end of the analysis (in seconds).}
+#'\item{all}{
+#'Information about all detected eQTLs.}
+#'\item{cis}{
+#'Information about detected local eQTLs.}
+#'\item{trans}{
+#'Information about detected distant eQTLs.}
+#'The elements \code{all}, \code{cis}, and \code{trans}
+#'may contain the following components
+#'\describe{
+#'\item{\code{ntests}}{
+#'Total number of tests performed. This is used for FDR calculation.
+#'}
+#'\item{\code{eqtls}}{
+#'Data frame with recorded significant associations.
+#'Not available if \code{noFDRsaveMemory=FALSE}
+#'}
+#'\item{\code{neqtls}}{
+#'Number of significant associations recorded.
+#'}
+#'\item{\code{hist.bins}}{
+#'Histogram bins used for recording p-value distribution.
+#'See \code{pvalue.hist} parameter.}
+#'\item{\code{hist.counts}}{
+#'Number of p-value that fell in each histogram bin.
+#'See \code{pvalue.hist} parameter.
+#'}
+#'\item{\code{min.pv.snps}}{
+#'Vector with the best p-value for each SNP.
+#'See \code{min.pv.by.genesnp} parameter.
+#'}
+#'\item{\code{min.pv.gene}}{
+#'Vector with the best p-value for each gene.
+#'See \code{min.pv.by.genesnp} parameter.
+#'}
+#'}
+#'}
 #'
 #' @examples
 #' library("LAMatrix")
@@ -95,7 +140,7 @@
 #'# Produce no output files
 #' filename = NULL; # tempfile()
 #'
-#'
+#'modelLOCAL = 930507L;
 #' me = LAMatrix_main(
 #'  snps = snps,
 #'  gene = genes,
@@ -1070,7 +1115,7 @@ modelLOCAL = 930507L;
 
 .seq = function(a,b){if(a<=b){a:b}else{integer(0)}};
 
-SlicedData <- setRefClass( "SlicedData",
+.SlicedData <- setRefClass( "SlicedData",
 	fields = list(
 		dataEnv = "environment",
 		nSlices1 = "numeric",
