@@ -1,0 +1,320 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8,latin1]{inputenc}
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `LAMatrix'}}
+\par\bigskip{\large \today}
+\end{center}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Efficient eQTL Mapping with Local Ancestry}
+\item[Version]\AsIs{0.99.0}
+\item[Maintainer]\AsIs{Yizhen Zhong }\email{yzzhong1993@gmail.com}\AsIs{}
+\item[Description]\AsIs{This package allows eQTL mapping while adjusting for a SNP-specific
+covariate with a linear model.}
+\item[License]\AsIs{LGPL-3}
+\item[LazyData]\AsIs{TRUE}
+\item[Depends]\AsIs{methods, MatrixEQTL}
+\item[RoxygenNote]\AsIs{6.0.1}
+\item[NeedsCompilation]\AsIs{no}
+\item[Author]\AsIs{Yizhen Zhong [aut, cre],
+Eric Gamazon [aut],
+Minoli Perera [cph]}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{LAMatirx-package}{Efficient eQTL Mapping with Local Ancestry}{LAMatirx.Rdash.package}
+\aliasA{LAMatrix}{LAMatirx-package}{LAMatrix}
+\aliasA{LAMatrix-package}{LAMatirx-package}{LAMatrix.Rdash.package}
+\keyword{package}{LAMatirx-package}
+%
+\begin{Description}\relax
+This package allows eQTL mapping while adjusting for a SNP-specific covariate with a linear model.
+
+
+\Tabular{ll}{ Package: & LAMatrix \\{} Type: & Package\\{}
+Version: & 0.99.0 \\{} Date: & 2018-06-18\\{} License: & LGPL-3\\{} }
+\end{Description}
+%
+\begin{Author}\relax
+Yizhen Zhong \email{yzzhong1993@gmail.com},
+Eric Gamazon \email{eric.gamazon@vanderbilt.edu},
+Minoli Perera \email{minoli.perera@northwestern.edu}
+\end{Author}
+\inputencoding{utf8}
+\HeaderA{LAMatrix\_main}{Efficient eQTL Mapping with Local Ancestry}{LAMatrix.Rul.main}
+%
+\begin{Description}\relax
+\code{LAMatrix\_main} is used to perform eQTL mapping with local ancestry when specifing \code{useModel = modelLOCAL}.
+The eQTL mapping is based on the linear model assuming additive effect of genotype on gene expression.
+
+This function performs the same analysis as MatrixEQTL::\LinkA{Matrix\_eQTL\_main}{Matrix.Rul.eQTL.Rul.main} when use \code{useModel = modelLINEAR, modelANOVA, modelLINEAR\_CROSS}.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+LAMatrix_main(snps, gene, cvrt = SlicedData$new(), local = SlicedData$new(),
+  output_file_name = "", pvOutputThreshold = 1e-05,
+  useModel = modelLINEAR, errorCovariance = numeric(), verbose = TRUE,
+  output_file_name.cis = "", pvOutputThreshold.cis = 0, snpspos = NULL,
+  genepos = NULL, cisDist = 1e+06, pvalue.hist = FALSE,
+  min.pv.by.genesnp = FALSE, noFDRsaveMemory = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{snps}] \code{SlicedData} object with genotype information.
+
+\item[\code{gene}] \code{SlicedData} object with gene expression information.
+Must have columns matching those of \code{snps}.
+
+\item[\code{cvrt}] \code{SlicedData} object with additional covariates.
+Can be an empty \code{SlicedData} object in case of no covariates.
+The order of columns must match those in \code{snps} and \code{gene}.
+
+\item[\code{local}] \code{SlicedData} object with local ancestry information.
+The order of columns must match those in \code{snps}, \code{gene} and \code{cvrt}.
+The order of rows must match those in \code{snps}.
+Can be an empty \code{SlicedData} object and will then perform \code{modelLINEAR}.
+
+\item[\code{output\_file\_name}] \code{character}, \code{connection}, or \code{NULL}.
+If not \code{NULL}, significant associations are saved to this file (all significant associations
+if \code{pvOutputThreshold=0} or only distant if \code{pvOutputThreshold>0}).
+If the file with this name exists, it is overwritten.
+
+\item[\code{pvOutputThreshold}] \code{numeric}. Significance threshold for all/distant tests.
+
+\item[\code{useModel}] \code{integer}. Either \code{modelLINEAR}, \code{modelANOVA},
+\code{modelLINEAR\_CROSS}, or \code{modelLOCAL}.
+\begin{enumerate}
+
+\item Set \code{useModel = modelLINEAR} to model
+the effect of the genotype as additive linear and
+test for its significance using t-statistic.
+\item Set \code{useModel = modelANOVA} to treat genotype
+as a categorical variables and use ANOVA model and
+test for its significance using F-test.
+\item Set \code{useModel = modelLINEAR\_CROSS} to add
+a new term to the model equal to the product of genotype and
+the last covariate; the significance of this term is
+then tested using t-statistic.
+\item Set \code{useModel = modelLOCAL} to model the
+effect of the genotype as additive linear while adjusting for a
+SNP-specific covariate (e.g. local ancestry) and test for genotype
+significance using t-statistic.
+
+\end{enumerate}
+
+
+\item[\code{errorCovariance}] \code{numeric}. The error covariance matrix.
+Use \code{numeric()} for homoskedastic independent errors. 
+
+\item[\code{verbose}] \code{logical}. Set to \code{TRUE} to display
+more detailed report about the progress.
+
+\item[\code{output\_file\_name.cis}] \code{character}, \code{connection}, or \code{NULL}.
+If not \code{NULL}, significant local associations are saved to this file.
+If the file with this name exists, it is overwritten.
+
+\item[\code{pvOutputThreshold.cis}] \code{numeric}. Same as \code{pvOutputThreshold}, but for local eQTLs.
+
+\item[\code{snpspos}] \code{data.frame} object with information about SNP locations,
+must have 3 columns - SNP name, chromosome, and position.
+
+\item[\code{genepos}] \code{data.frame} with information about transcript locations,
+must have 4 columns - the name, chromosome, and positions of the left and right ends.
+
+\item[\code{cisDist}] \code{numeric}. SNP-gene pairs within this distance are
+considered local. The distance is measured from the
+nearest end of the gene. SNPs within a gene are always considered local.
+
+\item[\code{pvalue.hist}] \code{logical}, \code{numerical}, or \code{"qqplot"}.
+Defines whether and how the distribution of p-values is recorded
+in the returned object.
+
+\item[\code{min.pv.by.genesnp}] 
+\code{logical}. Set \code{min.pv.by.genesnp = TRUE} to record
+the minimum p-value for each SNP and each gene in the returned object.
+
+\item[\code{noFDRsaveMemory}] 
+\code{logical}. Set \code{noFDRsaveMemory = TRUE} to save
+significant gene-SNP pairs directly to the output files.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+
+The detected eQTLs are saved in \code{output\_file\_name}
+and/or \code{output\_file\_name.cis} if they are not \code{NULL}.
+The method also returns a list with a summary of the performed analysis.
+
+
+
+
+
+The elements \code{all}, \code{cis}, and \code{trans}
+may contain the following components
+\begin{description}
+
+\item[\code{ntests}] 
+Total number of tests performed. This is used for FDR calculation.
+
+\item[\code{eqtls}] 
+Data frame with recorded significant associations.
+Not available if \code{noFDRsaveMemory=FALSE}
+
+\item[\code{neqtls}] 
+Number of significant associations recorded.
+
+\item[\code{hist.bins}] 
+Histogram bins used for recording p-value distribution.
+See \code{pvalue.hist} parameter.
+\item[\code{hist.counts}] 
+Number of p-value that fell in each histogram bin.
+See \code{pvalue.hist} parameter.
+
+\item[\code{min.pv.snps}] 
+Vector with the best p-value for each SNP.
+See \code{min.pv.by.genesnp} parameter.
+
+\item[\code{min.pv.gene}] 
+Vector with the best p-value for each gene.
+See \code{min.pv.by.genesnp} parameter.
+
+
+\end{description}
+
+
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+library("LAMatrix")
+
+n = 200;# Number of columns (samples)
+nc = 10;# Number ofs covariates
+
+cvrt.mat = 2 + matrix(rnorm(n*nc), ncol = nc);# Generate the covariates
+snps.mat = floor(runif(n, min = 0, max = 3)); # Generate the genotype
+local.mat = floor(runif(n, min = 0, max = 3)); # Generate the local ancestry
+
+# Generate the expression vector
+gene.mat = cvrt.mat %*% rnorm(nc) + rnorm(n) + 0.5 * snps.mat + 1 + 0.3 *local.mat;
+
+
+#Create SlicedData objects
+snps = SlicedData$new( matrix( snps.mat, nrow = 1 ) );
+genes = SlicedData$new( matrix( gene.mat, nrow = 1 ) );
+cvrts = SlicedData$new( t(cvrt.mat) );
+locals = SlicedData$new( matrix(local.mat,nrow=1))
+
+# Produce no output files
+filename = NULL; # tempfile()
+
+modelLOCAL = 930507L;
+me = LAMatrix_main(
+ snps = snps,
+ gene = genes,
+ cvrt = cvrts,
+ local = locals,
+ output_file_name = filename,
+ pvOutputThreshold = 1,
+ useModel = modelLOCAL,
+ verbose = TRUE,
+ pvalue.hist = FALSE);
+
+
+# Pull results - t-statistic and p-value
+beta = me$all$eqtls$beta;
+tstat = me$all$eqtls$statistic;
+pvalue = me$all$eqtls$pvalue;
+rez = c(beta = beta, tstat = tstat, pvalue = pvalue);
+print(rez)
+
+# Results from linear
+lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
+lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
+print( lmout );
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{modelLOCAL}{Constant for \code{\LinkA{LAMatrix\_main}{LAMatrix.Rul.main}}}{modelLOCAL}
+\keyword{datasets}{modelLOCAL}
+%
+\begin{Description}\relax
+Set parameter \code{useModel = modelLOCAL} in the call of
+\code{\LinkA{LAMatrix\_main}{LAMatrix.Rul.main}} to indicate that a SNP-specific covariate is
+adjusted
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+modelLOCAL
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+An object of class \code{integer} of length 1.
+\end{Format}
+%
+\begin{Examples}
+\begin{ExampleCode}
+library("LAMatrix")
+
+n = 200;# Number of columns (samples)
+nc = 10;# Number ofs covariates
+
+cvrt.mat = 2 + matrix(rnorm(n*nc), ncol = nc);# Generate the covariates
+snps.mat = floor(runif(n, min = 0, max = 3)); # Generate the genotype
+local.mat = floor(runif(n, min = 0, max = 3)); # Generate the local ancestry
+
+# Generate the expression vector
+gene.mat = cvrt.mat %*% rnorm(nc) + rnorm(n) + 0.5 * snps.mat + 1 + 0.3 *local.mat;
+
+
+#Create SlicedData objects
+snps = SlicedData$new( matrix( snps.mat, nrow = 1 ) );
+genes = SlicedData$new( matrix( gene.mat, nrow = 1 ) );
+cvrts = SlicedData$new( t(cvrt.mat) );
+locals = SlicedData$new( matrix(local.mat,nrow=1))
+
+# Produce no output files
+filename = NULL; # tempfile()
+
+modelLOCAL = 930507L;
+me = LAMatrix_main(
+ snps = snps,
+ gene = genes,
+ cvrt = cvrts,
+ local = locals,
+ output_file_name = filename,
+ pvOutputThreshold = 1,
+ useModel = modelLOCAL,
+ verbose = TRUE,
+ pvalue.hist = FALSE);
+
+
+# Pull results - t-statistic and p-value
+beta = me$all$eqtls$beta;
+tstat = me$all$eqtls$statistic;
+pvalue = me$all$eqtls$pvalue;
+rez = c(beta = beta, tstat = tstat, pvalue = pvalue);
+print(rez)
+
+# Results from linear
+lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
+lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
+print( lmout );
+
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}

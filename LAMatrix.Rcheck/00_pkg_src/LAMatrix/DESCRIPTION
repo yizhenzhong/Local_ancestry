@@ -1,0 +1,17 @@
+Package: LAMatrix
+Type: Package
+Title: Efficient eQTL Mapping with Local Ancestry
+Version: 0.99.0
+Authors@R: c(person("Yizhen", "Zhong", role  = c("aut", "cre"), email= "yzzhong1993@gmail.com"), person("Eric","Gamazon", role = c("aut"), email = "eric.gamazon@vanderbilt.edu"), person("Minoli","Perera", role = c("cph"), email = "minoli.perera@northwestern.edu"))
+Maintainer: Yizhen Zhong <yzzhong1993@gmail.com>
+Description: This package allows eQTL mapping while adjusting for a SNP-specific 
+    covariate with a linear model.
+License: LGPL-3
+LazyData: TRUE
+Depends: methods, MatrixEQTL
+RoxygenNote: 6.0.1
+NeedsCompilation: no
+Packaged: 2018-06-28 22:52:09 UTC; yzk256
+Author: Yizhen Zhong [aut, cre],
+  Eric Gamazon [aut],
+  Minoli Perera [cph]
