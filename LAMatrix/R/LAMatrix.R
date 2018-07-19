@@ -8,7 +8,8 @@
 #' @description \code{LAMatrix_main} is used to perform eQTL mapping with local ancestry when specifing \code{useModel = modelLOCAL}.
 #' The eQTL mapping is based on the linear model assuming additive effect of genotype on gene expression.
 #'
-#' This function performs the same analysis as MatrixEQTL::\link[MatrixEQTL]{Matrix_eQTL_main} when use \code{useModel = modelLINEAR, modelANOVA, modelLINEAR_CROSS}.
+#' This function performs the same analysis as MatrixEQTL::\link[MatrixEQTL]{Matrix_eQTL_main}
+#' when use \code{useModel = modelLINEAR, modelANOVA, } and \code{modelLINEAR_CROSS}.
 #'
 #' @param snps \code{SlicedData} object with genotype information.
 #' @param gene \code{SlicedData} object with gene expression information.
@@ -19,7 +20,7 @@
 #' @param local \code{SlicedData} object with local ancestry information.
 #' The order of columns must match those in \code{snps}, \code{gene} and \code{cvrt}.
 #' The order of rows must match those in \code{snps}.
-#' Can be an empty \code{SlicedData} object and will then perform \code{modelLINEAR}.
+#' Can be an empty \code{SlicedData} object and the analysis will be the same as \code{modelLINEAR}.
 #' @param output_file_name \code{character}, \code{connection}, or \code{NULL}.
 #' If not \code{NULL}, significant associations are saved to this file (all significant associations
 #' if \code{pvOutputThreshold=0} or only distant if \code{pvOutputThreshold>0}).
@@ -140,7 +141,6 @@
 #'# Produce no output files
 #' filename = NULL; # tempfile()
 #'
-#'modelLOCAL = 930507L;
 #' me = LAMatrix_main(
 #'  snps = snps,
 #'  gene = genes,
@@ -160,7 +160,7 @@
 #' rez = c(beta = beta, tstat = tstat, pvalue = pvalue);
 #' print(rez)
 #'
-#'# Results from linear
+#'# Results from linear regression
 #' lmdl = lm( gene.mat ~ snps.mat + cvrt.mat + local.mat);
 #' lmout = summary(lmdl)$coefficients[2,c("Estimate","t value","Pr(>|t|)")];
 #' print( lmout );
