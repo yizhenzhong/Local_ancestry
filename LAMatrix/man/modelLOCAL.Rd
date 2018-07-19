@@ -12,8 +12,7 @@ modelLOCAL
 }
 \description{
 Set parameter \code{useModel = modelLOCAL} in the call of
-\code{\link{LAMatrix_main}} to indicate that a SNP-specific covariate is
-adjusted
+\code{\link{LAMatrix_main}} to adjust for a SNP-specific covariate.
 }
 \examples{
 library("LAMatrix")
