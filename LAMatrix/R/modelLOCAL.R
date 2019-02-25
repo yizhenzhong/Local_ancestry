@@ -31,7 +31,6 @@
 #'# Produce no output files
 #' filename = NULL; # tempfile()
 #'
-#'modelLOCAL = 930507L;
 #' me = LAMatrix_main(
 #'  snps = snps,
 #'  gene = genes,
