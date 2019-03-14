@@ -1,0 +1,135 @@
+---
+title: "simulate_genotype"
+author: "Yizhen Zhong"
+date: "March 12, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "R:/Basic_Sciences/Pharm/Perera_Lab/Yizhen/human_panel/human_panel/aa_0927/script")
+```
+
+```{r}
+set.seed(20180621)
+
+Fst = 0.05
+n.idvs = 1000
+n.snp = 1000
+ntrans = 1
+h2 = 0.3
+```
+
+## functions 
+
+```{r}
+gene.local <- function(n.idvs, n.snp, global.afr.anc, ntrans){
+  ##generate the local ancestry at one SNP
+  local.mat <- matrix(0, nrow = n.idvs, ncol=n.snp)
+  i <- 1
+  while(i <= n.idvs){
+    local.afr.anc.h1 <- rbinom(ntrans+1, 1, global.afr.anc[i])
+    local.afr.anc.h2 <- rbinom(ntrans+1, 1, global.afr.anc[i])
+    local.afr.anc <- local.afr.anc.h1 + local.afr.anc.h2
+    break.snp <- sample(c(1:n.snp), ntrans)
+    break.snp <- sort(break.snp)
+    local.ind <- c(rep(local.afr.anc[1], break.snp), rep(local.afr.anc[2], n.snp-break.snp))
+    local.mat[i,] <- local.ind
+    i <- i +1
+    
+  }
+  return(local.mat)
+}
+
+
+
+gene.allele.frequency <- function(Fst){
+  # set allele frequencies for ancestries
+  p.ae <- 0
+  p.e <- 0
+  p.a <- 0
+  p <- runif(1, 0.05, 0.95)
+  while (p.e < 0.05 || p.e > 0.95) {
+    p.e <- rbeta(1, p*(1-Fst)/Fst,(1-p)*(1-Fst)/Fst)
+  }
+  
+  while (p.a < 0.05 || p.a > 0.95) {
+    p.a <- rbeta(1, p*(1-Fst)/Fst,(1-p)*(1-Fst)/Fst)
+  }
+  
+  p.ae <- (p.a + p.e) / 2
+  return(c(p.a, p.e, p.ae))
+}
+
+
+simu.1.geno <- function(n.idvs, local.afr.anc, frequency){
+  # set genotype for one position based on local ancestry
+  p.a = frequency[1]
+  p.e = frequency[2]
+  p.ae = frequency[3]
+  # set genotypes
+  genos <- matrix(NA, nrow=n.idvs, ncol=1)
+  genos.idx <- 1
+  for (i in local.afr.anc) {
+    if (i == 2) {
+      geno <- rbinom(1, 2, p.e)
+      genos[genos.idx, 1] <- geno
+    }
+    else if (i == 1) {
+      geno <- rbinom(1, 2, p.ae)
+      genos[genos.idx, 1] <- geno
+    }
+    else {
+      geno <- rbinom(1, 2, p.a)
+      genos[genos.idx, 1] <- geno
+    }
+    
+    genos.idx <- genos.idx + 1
+  }
+  return(genos)
+  
+}
+
+
+```
+
+## Step1: generate global ancestry
+
+```{r}
+##########
+#
+global.afr.anc <- rnorm(n.idvs, 0.7, 0.2)
+global.afr.anc[ global.afr.anc > 1 ] <- 0.99
+global.afr.anc[ global.afr.anc < 0 ] <- 0.01
+
+```
+
+## Step2: generate local ancestry
+
+```{r}
+##########
+#
+la.mat <- gene.local(n.idvs, n.snp, global.afr.anc, ntrans)
+
+```
+
+
+
+## Step3: generate genotype
+
+```{r}
+geno.mat = matrix(0, nrow = n.idvs, ncol = n.snp)
+i = 1
+while(i <= n.snp){
+  frequency <- gene.allele.frequency(Fst)
+  geno.mat[,i] <- simu.1.geno(n.idvs, la.mat[,i], frequency)
+  i <- i + 1
+}
+
+````
+
+## Step4: write to files
+```{r}
+write.table(geno.mat, "../data/genotype_matrix_fst0.05_0304.txt", col.names = F, row.names = F, quote = F)
+write.table(la.mat, "../data/LA_matrix_fst0.05_0304.txt", col.names = F, row.names = F, quote = F)
+write.table(global.afr.anc, "../data/global.afr.fst0.05_0304.txt", col.names = F, row.names = F, quote = F)
+```

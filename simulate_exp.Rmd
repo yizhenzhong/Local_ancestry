@@ -1,0 +1,105 @@
+---
+title: "simulate_exp"
+author: "Yizhen Zhong"
+date: "March 12, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "R:/Basic_Sciences/Pharm/Perera_Lab/Yizhen/human_panel/human_panel/aa_0927/script")
+set.seed(03112019)
+```
+
+##  
+
+```{r}
+standardize_regular <- function(matrix){
+  return(apply(matrix, 2, function(x) (x-mean(x))/sd(x)))
+}
+
+
+polygenicity_joint <- function(h2_g, stand.geno, ncausal, h2_l, stand.la){
+  # 1. SNP effects
+  u = rnorm(ncausal,0,1)
+  # 2. genetic value
+  geno_sub = stand.geno[,sample(ncol(stand.geno), ncausal)]
+  g = geno_sub %*% u
+  g = (g - mean(g))/sd(g)
+  # 3. add environmental noise
+  y = sqrt(h2_g) * g + sqrt(h2_l) * apply(stand.la, 1, mean) + rnorm(nrow(stand.geno),0, sqrt(1-h2_g-h2_l))
+  y = (y - mean(y))/sd(y)
+  return(y)
+}
+
+
+write_exp <- function(h2_g, ncausal, h2_l, stand.geno, stand.la, real, global.afr.anc){
+  print(paste0("h2_g: ",h2_g, ", h2_l: ", h2_l, ", m: ", ncausal))
+  exp.mat = matrix(0, ncol = 100, nrow = nrow(stand.geno))
+  for(i in 1:100){
+    exp <- polygenicity_joint(h2_g, stand.geno, ncausal, h2_l, stand.la)
+    exp.mat[,i] = exp
+  }
+  
+  rsquare = matrix(0, nrow=ncol(exp.mat), ncol=1)
+  new_exp = matrix(0, nrow=nrow(exp.mat), ncol=ncol(exp.mat))
+  
+  for(i in 1:ncol(exp.mat)){
+    a = summary(lm(exp.mat[,i]~global.afr.anc))
+    rsquare[i,] = a$r.squared
+    new_exp[,i] = scale(a$residuals)
+  }
+  
+  if(!(real)){
+    write.table(exp.mat, paste0("../data/0304_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    write.table(rsquare, paste0("../data/0304_rsquare_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    write.table(new_exp, paste0("../data/0304_residual_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    
+    
+  }else{
+    write.table(exp.mat, paste0("../data/0304_real_genotype_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    write.table(rsquare, paste0("../data/0304_rsquare_real_genotype_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    write.table(exp.mat, paste0("../data/0304_residual_real_genotype_expression_h2g_", h2_g, "_h2l_", h2_l, "_", ncausal, ".txt"), row.names = F, col.names = F, quote = F)
+    
+  }
+}
+
+```
+
+
+
+## Step up
+```{r}
+hgl_vect <- c(0.00138, 0.00544, 0.01755, 0.1999)
+m <- c(10, 25, 100, 200, 500, 1000)
+h2_g = 0.3
+```
+
+
+
+
+## Use simulated genotype
+```{r}
+geno.mat <- read.table("../data/genotype_matrix_fst0.05_0304.txt", header = F, stringsAsFactors = F)
+la.mat <- read.table("../data/LA_matrix_fst0.05_0304.txt", header = F, stringsAsFactors = F)
+global.afr.anc <- read.table("../data/global.afr.fst0.05_0304.txt", header = F)[,1]
+stand.geno <- standardize_regular(geno.mat)
+stand.la <- standardize_regular(la.mat)
+for(h2_l in hgl_vect){
+  sapply(m, function(x) write_exp(h2_g, x, h2_l, stand.geno, stand.la, real = FALSE, global.afr.anc))
+}
+```
+
+
+## Use real genotype
+```{r}
+m <- c(10, 25, 100, 200, 500)
+geno.mat <- read.table("../data/real_genotype.txt", header = F, stringsAsFactors = F)
+la.mat <- read.table("../data/real_local_ancestry.txt", header = F, stringsAsFactors = F)
+global.afr.anc <- read.table("../data/real_genotype_1st_PC.txt", header = F)[,1]
+stand.geno <- standardize_regular(geno.mat)
+stand.la <- standardize_regular(la.mat)
+for(h2_l in hgl_vect){
+  sapply(m, function(x) write_exp(h2_g, x, h2_l, stand.geno, stand.la, real = TRUE, global.afr.anc))
+}
+```

@@ -1,0 +1,107 @@
+---
+title: "PVE_estimation"
+author: "Yizhen Zhong"
+date: "March 12, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reshape2)
+library(ggplot2)
+knitr::opts_knit$set(root.dir = "R:/Basic_Sciences/Pharm/Perera_Lab/Yizhen/human_panel/human_panel/aa_0927/script")
+```
+
+## To illustrate the joint-GaLA and Simple-LMM model 
+
+Using genotype, h2g=0.3, h2l=0.2, n_causal=200
+
+REML estimation used codes from https://github.com/sashagusev/SKK-REML-sim
+
+To simplify the process, only show one simualtion result
+```{r}
+
+source("./SKK-REML-sim/func_reml.R")
+
+
+standardize_regular <- function(matrix){
+  return(apply(matrix, 2, function(x) (x-mean(x))/sd(x)))
+}
+
+kinship <- function(stand.mat){
+  return(stand.mat %*% t(stand.mat)/ncol(stand.mat))
+}
+
+```
+
+## Read the genotype and LA matrix
+
+```{r}
+
+#read genotype matrix
+geno.mat <- as.matrix(read.table("../data/real_genotype.txt", stringsAsFactors = F, header = F))
+#read LA matrix
+la.mat <-  as.matrix(read.table("../data/real_local_ancestry.txt", stringsAsFactors = F, header = F))
+#read simulated expression, after regression the global ancestry
+fn = paste0("../data/0304_residual_real_genotype_expression_h2g_0.3_h2l_0.1999_200.txt")
+exp.mat <- as.matrix(read.table(fn, header = F, stringsAsFactors = F))
+```
+
+
+
+```{r}
+stand.geno <- standardize_regular(geno.mat) #standardize the genotype matrix
+kin.mat <- kinship(stand.geno) #calculate the kinship matrix
+stand.la <- standardize_regular(la.mat)
+kin.la.mat <- kinship(stand.la)
+```
+
+
+## Joint-GaLA 
+
+```{r, include=TRUE,results="hide"}
+## V(G1)/Vp is the PVE estimation
+table_joint_gala = matrix(0, nrow = 100, ncol=2)
+for(h in 1:100){
+  print(h)  
+  tryCatch({
+    exp =  exp.mat[,h]
+    ## estimate heritability
+    K = list()
+    K[[1]] = kin.mat
+    K[[2]] = kin.la.mat
+    reml= aiML(K,exp,c(0.5,0.5, 0.5))
+    table_joint_gala[h,] = c(reml$h2, reml$se[1])
+  }, error=function(e){})
+  #if(length(reml)>0)(table_joint_gala[h,] = c(reml$h2, reml$se[1]))
+}                
+
+```
+
+
+## Single-LMM
+```{r, include=TRUE,results="hide"}
+# V(G1)/Vp is the PVE estimation
+table_simple_LMM = matrix(0, nrow = 100, ncol=2)
+for(h in 1:100){
+  print(h)  
+  tryCatch({
+    exp =  exp.mat[,h]
+    ## estimate heritability
+    ## estimate heritability
+    K = list()
+    K[[1]] = kin.mat
+    reml = try(aiML(K,exp,c(0.5,0.5)))
+    table_simple_LMM[h,] = c(reml$h2, reml$se[1])
+  }, error=function(e){})
+}  
+  
+```
+
+## Plot result
+```{r message=FALSE}
+
+res = data.frame("Simple-LMM"=table_simple_LMM[,1], "joint-GaLA"=table_joint_gala[,1])
+res = melt(res)
+ggplot(res, aes(x=variable, y=value))+geom_boxplot()+ylim(0.01, 1)
+```
